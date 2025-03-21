@@ -73,18 +73,18 @@ func startApp() {
 				}
 				return event
 			})
-			dataView.AddItem(data.ProfileData.Print(), 0, 1, true)
+			dataView.AddItem(data.PrintProfile(data.ProfileData), 0, 1, true)
 			return
 		}
 
 		// Print the selected character data
 		dataView.Clear().SetTitle("[ Character Data ]")
-		dataView.AddItem(data.CharacterData.Print(index), 0, 1, false)
+		dataView.AddItem(data.PrintCharacter(data.CharacterData, index), 0, 1, false)
 	})
 
 	// Print the first character data by default
 	dataView.Clear().SetTitle("[ Character Data ]")
-	dataView.AddItem(data.CharacterData.Print(0), 0, 1, false)
+	dataView.AddItem(data.PrintCharacter(data.CharacterData, 0), 0, 1, false)
 
 	// Create a layout using Flex to display the character list and the form side by side
 	flex := tview.NewFlex()

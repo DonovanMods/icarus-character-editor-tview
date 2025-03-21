@@ -3,6 +3,7 @@ module github.com/donovanmods/icarus-character-editor
 go 1.24.0
 
 require (
+	github.com/donovanmods/icarus-player-data v0.0.0
 	github.com/gdamore/tcell/v2 v2.8.1
 	github.com/rivo/tview v0.0.0-20241227133733-17b7edb88c57
 )
@@ -16,3 +17,5 @@ require (
 	golang.org/x/term v0.30.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
 )
+
+replace github.com/donovanmods/icarus-player-data => ../icarus-player-data
