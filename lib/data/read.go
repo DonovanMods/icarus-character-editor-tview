@@ -33,7 +33,13 @@ func Read() error {
 			if filepath.Base(path) == "Characters.json" {
 				log.Printf("Reading Character data from %q\n", path)
 
-				CharacterData, err = character.NewCharacterData(path)
+				r, err := os.Open(path)
+				if err != nil {
+					return fmt.Errorf("opening file: %w", err)
+				}
+				defer r.Close()
+
+				CharacterData, err = character.NewCharacterData(r)
 				if err != nil {
 					return fmt.Errorf("reading Character data: %w", err)
 				}
@@ -44,7 +50,13 @@ func Read() error {
 			if filepath.Base(path) == "Profile.json" {
 				log.Printf("Reading Profile data from %q", path)
 
-				ProfileData, err = profile.NewProfileData(path)
+				r, err := os.Open(path)
+				if err != nil {
+					return fmt.Errorf("opening file: %w", err)
+				}
+				defer r.Close()
+
+				ProfileData, err = profile.NewProfileData(r)
 				if err != nil {
 					return fmt.Errorf("reading Profile data: %w", err)
 				}
