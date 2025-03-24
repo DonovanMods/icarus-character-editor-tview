@@ -21,13 +21,12 @@ func PrintProfile(p *profile.ProfileData) tview.Primitive {
 		}
 
 		p.SetCountFor(field, count)
-		p.Dirty = true
 	}
 
 	form := tview.NewForm()
 	form.SetBorder(false).SetBorderPadding(1, 1, 1, 1)
 
-	form.AddTextView("UserID", p.Profile.UserID, 40, 2, true, false)
+	form.AddTextView("UserID", p.UserID, 40, 2, true, false)
 	form.AddInputField("Credits", p.GetCountFor(profile.Credits), 10, nil, func(text string) {
 		saveCount(profile.Credits, text)
 	})
