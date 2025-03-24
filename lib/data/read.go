@@ -2,10 +2,6 @@ package data
 
 import (
 	"fmt"
-	"io/fs"
-	"log"
-	"os"
-	"path/filepath"
 
 	"github.com/donovanmods/icarus-player-data/character"
 	"github.com/donovanmods/icarus-player-data/profile"
@@ -17,69 +13,16 @@ var (
 )
 
 func Read() error {
-	readCount := 0
+	var err error
 
-	appDataDir, err := os.UserCacheDir()
+	CharacterData, err = character.NewCharacterData()
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("error reading character data: %w", err)
 	}
 
-	readData := func(path string, file fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if !file.IsDir() {
-			if filepath.Base(path) == "Characters.json" {
-				log.Printf("Reading Character data from %q\n", path)
-
-				r, err := os.Open(path)
-				if err != nil {
-					return fmt.Errorf("opening file: %w", err)
-				}
-				defer r.Close()
-
-				CharacterData, err = character.NewCharacterData(r)
-				if err != nil {
-					return fmt.Errorf("reading Character data: %w", err)
-				}
-
-				readCount++
-			}
-
-			if filepath.Base(path) == "Profile.json" {
-				log.Printf("Reading Profile data from %q", path)
-
-				r, err := os.Open(path)
-				if err != nil {
-					return fmt.Errorf("opening file: %w", err)
-				}
-				defer r.Close()
-
-				ProfileData, err = profile.NewProfileData(r)
-				if err != nil {
-					return fmt.Errorf("reading Profile data: %w", err)
-				}
-
-				readCount++
-			}
-		}
-
-		// Stop walking after we've read both files
-		if readCount == 2 {
-			log.Println("Finished reading data")
-			return filepath.SkipAll
-		}
-
-		return nil
-	}
-
-	playerData := filepath.Join(appDataDir, "Icarus", "Saved", "PlayerData")
-
-	log.Println("Reading Data from", playerData)
-
-	if err := filepath.WalkDir(playerData, readData); err != nil {
-		return err
+	ProfileData, err = profile.NewProfileData()
+	if err != nil {
+		return fmt.Errorf("error reading profile data: %w", err)
 	}
 
 	return nil
