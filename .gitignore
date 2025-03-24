@@ -17,4 +17,4 @@
 tmp/
 
 # Workspace files
-go.work
+go.work*
