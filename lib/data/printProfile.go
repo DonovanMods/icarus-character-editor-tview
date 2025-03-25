@@ -9,7 +9,9 @@ import (
 	"github.com/rivo/tview"
 )
 
-func PrintProfile(p *profile.ProfileData) tview.Primitive {
+var statusField *tview.TextView
+
+func PrintProfile(p *profile.ProfileData, app *tview.Application) tview.Primitive {
 	saveCount := func(field string, text string) {
 		if text == "" {
 			return
@@ -17,14 +19,56 @@ func PrintProfile(p *profile.ProfileData) tview.Primitive {
 
 		count, err := strconv.Atoi(text)
 		if err != nil {
-			log.Print(fmt.Errorf("unable to convert %s to int: %w", text, err))
+			if statusField == nil {
+				log.Fatal("unable to get status field")
+			}
+			statusField.SetText(fmt.Errorf("[red::b]unable to convert %s to int: %w[-::-]", text, err).Error())
+
+			return
 		}
 
+		statusField.SetText("")
+
 		p.SetCountFor(field, count)
+		// saveAll()
 	}
 
 	form := tview.NewForm()
 	form.SetBorder(false).SetBorderPadding(1, 1, 1, 1)
+
+	// form.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+	// 	index, btn := form.GetFocusedItemIndex()
+	// 	if btn > 0 {
+	// 		index = btn
+	// 	}
+
+	// 	switch event.Key() {
+	// 	case tcell.KeyUp, tcell.KeyBacktab:
+	// 		form.SetFocus(index - 1)
+	// 	case tcell.KeyDown, tcell.KeyTab:
+	// 		form.SetFocus(index + 1)
+	// 	case tcell.KeyRune:
+	// 		// VIM style navigation
+	// 		switch event.Rune() {
+	// 		case 'k':
+	// 			form.SetFocus(index - 1)
+	// 		case 'j':
+	// 			form.SetFocus(index + 1)
+	// 		default:
+	// 			return event
+	// 		}
+	// 	default:
+	// 		return event
+	// 	}
+
+	// 	return nil
+	// })
+
+	form.AddTextView("", "", 40, 2, true, false)
+	statusField = form.GetFormItem(0).(*tview.TextView)
+	if statusField == nil {
+		log.Fatal("unable to get status field")
+	}
 
 	form.AddTextView("UserID", p.UserID, 40, 2, true, false)
 	form.AddInputField("Credits", p.GetCountFor(profile.Credits), 10, nil, func(text string) {
@@ -39,24 +83,6 @@ func PrintProfile(p *profile.ProfileData) tview.Primitive {
 	form.AddInputField("Red Exotics", p.GetCountFor(profile.RedExotics), 10, nil, func(text string) {
 		saveCount(profile.RedExotics, text)
 	})
-
-	// table := tview.NewTable().SetSelectable(true, true).SetBorders(false)
-	// table.SetBorderPadding(1, 1, 1, 1)
-
-	// table.SetCell(0, 0, tview.NewTableCell("UserID:").SetTextColor(tcell.ColorGreen).SetSelectable(false))
-	// table.SetCell(0, 1, tview.NewTableCell(C.Profile.UserID).SetTextColor(tcell.ColorWhite).SetSelectable(false))
-
-	// table.SetCell(2, 0, tview.NewTableCell("Credits:").SetTextColor(tcell.ColorGreen).SetSelectable(false))
-	// table.SetCell(2, 1, tview.NewTableCell(C.getMetaCountFor(Credits)).SetTextColor(tcell.ColorYellow).SetSelectable(true))
-	// table.SetCell(2, 2, tview.NewTableCell("Refund:").SetTextColor(tcell.ColorGreen).SetSelectable(false))
-	// table.SetCell(2, 3, tview.NewTableCell(C.getMetaCountFor(Refund)).SetTextColor(tcell.ColorYellow).SetSelectable(true))
-
-	// table.SetCell(4, 1, tview.NewTableCell("Purple").SetTextColor(tcell.ColorPurple).SetAlign(tview.AlignRight).SetSelectable(false))
-	// table.SetCell(4, 2, tview.NewTableCell("Red").SetTextColor(tcell.ColorRed).SetAlign(tview.AlignRight).SetSelectable(false))
-
-	// table.SetCell(5, 0, tview.NewTableCell("Exotics:").SetTextColor(tcell.ColorBlue).SetSelectable(false))
-	// table.SetCell(5, 1, tview.NewTableCell(C.getMetaCountFor(Exotics)).SetTextColor(tcell.ColorPurple).SetAlign(tview.AlignRight).SetSelectable(true))
-	// table.SetCell(5, 2, tview.NewTableCell(C.getMetaCountFor(ExoticsRed)).SetTextColor(tcell.ColorRed).SetAlign(tview.AlignRight).SetSelectable(true))
 
 	return form
 }

@@ -1,3 +1,5 @@
+TRUNK="${HOME}/.cache/trunk/launcher/trunk"
+
 default: check
 
 ## Main Commands
@@ -13,16 +15,16 @@ tidy:
 	go mod tidy
 
 fmt: tidy
-	trunk fmt
+	${TRUNK} fmt
 
 fmt-all: tidy
-	trunk fmt --all
+	${TRUNK} fmt --all
 
 check: fmt
-	trunk check
+	${TRUNK} check
 
 check-all: fmt-all
-	trunk check --all
+	${TRUNK} check --all
 
 test:
 	go test ./lib/...
@@ -33,7 +35,7 @@ clean-bin:
 update: upgrade
 upgrade: tidy
 	go get -u
-	trunk upgrade
+	${TRUNK} upgrade
 
 ## Build sub-commands
 

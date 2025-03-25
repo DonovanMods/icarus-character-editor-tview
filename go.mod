@@ -3,9 +3,9 @@ module github.com/donovanmods/icarus-character-editor
 go 1.24.0
 
 require (
-	github.com/donovanmods/icarus-player-data v0.1.1
+	github.com/donovanmods/icarus-player-data v0.1.2
 	github.com/gdamore/tcell/v2 v2.8.1
-	github.com/rivo/tview v0.0.0-20250322200051-73a5bd7d6839
+	github.com/rivo/tview v0.0.0-20250325173046-7b72abf45814
 )
 
 require (
